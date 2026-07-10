@@ -1,0 +1,475 @@
+/* --- Reset & Global Layout --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #fcfcfc;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* --- Header / Navigation --- */
+header {
+    background-color: #991b1b; /* Dark Burgundy */
+    color: white;
+    padding: 12px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.logo-container img {
+    display: block;
+    max-height: 50px;
+    width: auto;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.nav-links a:hover {
+    opacity: 0.8;
+}
+
+/* --- Fixed Hero Banner Section --- */
+.hero {
+    position: relative;
+    width: 100%;
+    /* Fixed pixel height frames the image like a photo canvas */
+    height: 480px; 
+    
+    /* REPLACEMENT: Change 'church.jpg' to the actual name of your church background file */
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('Santuario_del_Santo_Cristo\,_San_Juan_City\,_April_2022.jpg') no-repeat;
+    
+    /* Keeps the image perfectly scaled and centers the horizon of the building */
+    background-size: cover;
+    background-position: center 30%; 
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.hero-content {
+    text-align: center;
+    color: white;
+    padding: 0 20px;
+    max-width: 800px;
+}
+
+.hero h2 {
+    font-size: 1.3rem;
+    font-weight: 400;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    letter-spacing: -0.5px;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+}
+
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+/* --- Buttons --- */
+.btn {
+    padding: 10px 24px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #000;
+    color: #fff;
+    border: 1px solid #000;
+}
+
+.btn-primary:hover {
+    background-color: #222;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: #fff;
+    border: none;
+}
+
+.btn-secondary:hover {
+    text-decoration: underline;
+}
+
+/* --- Services Layout --- */
+.services-container {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 0 25px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.service-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #eee;
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-4px);
+}
+
+.card-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.card-content h3 {
+    font-size: 1.35rem;
+    margin-bottom: 12px;
+    color: #111;
+}
+
+.card-content p {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 25px;
+    flex-grow: 1;
+}
+
+.card-action {
+    color: #111;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+}
+
+.card-action:hover {
+    text-decoration: underline;
+}
+
+/* --- Responsiveness --- */
+@media (max-width: 992px) {
+    .services-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .hero {
+        height: 380px;
+    }
+    .hero h1 {
+        font-size: 2.2rem;
+    }
+    .services-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.main-footer{
+    background-color: #111;
+    color: #e5e7eb;
+    padding: 60px 0 20px 0;
+    margin-top: 80px;
+    border-top: 4px solid #eab308;
+}
+
+.footer-container{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 25px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+}
+
+.foot-col h3{
+    color: #fff;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+}
+
+.footer-col p{
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 12px;
+    color: #ccc;
+}
+
+.footer-col .church-name{ 
+    font-weight: 600;
+    color: #fff;
+    font-size: 1rem;
+    margin-bottom: 8px;
+}
+
+.schedule-list .footer-links{
+    list-style: none;
+    padding: 0;
+}
+
+.schedule-list strong{
+    color: #fff;
+}
+
+.footer-links li{
+    margin-bottom: 12px;
+}
+
+.footer-links a{
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover{
+    color: #eab308;
+    text-decoration: underline;
+}
+
+.footer-bottom{
+    max-width: 1200px;
+    margin: 40px auto 0 auto;
+    padding: 20px 25px 0 25px;
+    border-top: 1px solid #2d2d2d;
+    text-align: center;
+}
+
+.footer-bottom p {
+    font-size: 0.8rem;
+    color: #777;
+}
+
+/* --- Footer Mobile Responsiveness --- */
+@media (max-width: 992px) {
+    .footer-container {
+        grid-template-columns: repeat(2, 1fr); /* Collapses down to 2 columns on tablets */
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-container {
+        grid-template-columns: 1fr; /* Stacks into 1 vertical column perfectly on mobile screens */
+        gap: 30px;
+    }
+    .footer-bottom {
+        margin-top: 30px;
+    }
+}
+
+/* --- Pure Front-End Glassmorphism Login Overlay --- */
+.login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Reuses the exact church background image with a dark layout veil */
+    background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('church.jpg') no-repeat center center;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+/* Activates the display via state class changes */
+.login-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Authentic Frosted Window matching the user reference design image */
+.login-box {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    padding: 40px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    color: #fff;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    position: relative;
+    transform: scale(0.85);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.login-overlay.active .login-box {
+    transform: scale(1);
+}
+
+/* 'X' Close Switch */
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: #fff;
+}
+
+.login-box h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2.2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Bottom Line Input Style Configurations */
+.input-group {
+    position: relative;
+    margin-bottom: 30px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 8px 30px 8px 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+/* Interactive Floating Input Label behavior */
+.input-group label {
+    position: absolute;
+    left: 0;
+    top: 8px;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    pointer-events: none;
+    transition: transform 0.3s ease, font-size 0.3s ease, color 0.3s ease;
+}
+
+/* Animates label upwards on interaction */
+.input-group input:focus ~ label,
+.input-group input:not(:placeholder-shown) ~ label {
+    transform: translateY(-22px);
+    font-size: 0.85rem;
+    color: #eab308; /* Turns gold when active */
+}
+
+.input-icon {
+    position: absolute;
+    right: 5px;
+    top: 8px;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Inline options and helpers styling */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    margin-bottom: 30px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.form-options a {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+}
+
+.form-options a:hover {
+    text-decoration: underline;
+}
+
+/* Submission Framework Style matching the user layout */
+.login-submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #991b1b; /* Matches your Parish dark red branding */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s;
+}
+
+.login-submit-btn:hover {
+    background-color: #b91c1c;
+}
+
+.register-prompt {
+    text-align: center;
+    font-size: 0.85rem;
+    margin-top: 25px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.register-prompt a {
+    color: #eab308; /* Highlighted Link Gold Accent */
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register-prompt a:hover {
+    text-decoration: underline;
+}
