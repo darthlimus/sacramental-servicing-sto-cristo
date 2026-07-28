@@ -473,3 +473,268 @@ header {
 .register-prompt a:hover {
     text-decoration: underline;
 }
+
+/* --- Sacramental Modal Overlays --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: 20px;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-box {
+    background: #1f2937; /* Dark elegant container background */
+    border: 1px solid #eab308; /* Gold Accent Frame */
+    border-radius: 12px;
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+    color: #fff;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-box h2 {
+    color: #eab308;
+    margin-bottom: 20px;
+    font-size: 1.6rem;
+    border-bottom: 1px solid rgba(234, 179, 8, 0.3);
+    padding-bottom: 10px;
+}
+
+.form-section-title {
+    color: #f3f4f6;
+    font-weight: 600;
+    margin: 15px 0 10px 0;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Form Row & Input Layout */
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    color: #d1d5db;
+    margin-bottom: 5px;
+}
+
+.form-group input, 
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: #111827;
+    border: 1px solid #374151;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus, 
+.form-group textarea:focus {
+    border-color: #eab308;
+}
+
+.form-submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #991b1b; /* Parish Burgundy */
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.2s;
+}
+
+.form-submit-btn:hover {
+    background-color: #b91c1c;
+}
+
+/* Responsive adjustment for small mobile screens */
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+/* --- File Upload Modal Styling --- */
+.upload-modal-box {
+    max-width: 650px;
+}
+
+.modal-subtitle {
+    font-size: 0.9rem;
+    color: #9ca3af;
+    margin-bottom: 20px;
+}
+
+/* Requirements Box */
+.requirements-box {
+    background: #111827;
+    border-left: 4px solid #eab308;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 25px;
+}
+
+.requirements-box h4 {
+    color: #eab308;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.requirements-box ul {
+    list-style: none;
+    padding-left: 5px;
+}
+
+.requirements-box li {
+    font-size: 0.85rem;
+    color: #d1d5db;
+    margin-bottom: 4px;
+}
+
+/* Drag and Drop Zone */
+.drop-zone {
+    border: 2px dashed rgba(234, 179, 8, 0.5);
+    border-radius: 10px;
+    padding: 30px 20px;
+    text-align: center;
+    background: rgba(17, 24, 39, 0.6);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.drop-zone:hover {
+    border-color: #eab308;
+    background: rgba(234, 179, 8, 0.05);
+}
+
+.drop-zone-icon {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.drop-zone-text {
+    font-size: 0.95rem;
+    color: #f3f4f6;
+    margin-bottom: 5px;
+}
+
+.drop-zone-hint {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* Selected Files Container List */
+.selected-files-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #111827;
+    border: 1px solid #374151;
+    padding: 10px 15px;
+    border-radius: 8px;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.file-icon {
+    font-size: 1.2rem;
+}
+
+.file-name {
+    font-size: 0.85rem;
+    color: #fff;
+    font-weight: 500;
+    word-break: break-all;
+}
+
+.file-size {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.remove-file-btn {
+    color: #ef4444;
+    font-size: 1.2rem;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0 5px;
+}
+
+.remove-file-btn:hover {
+    color: #dc2626;
+}
+
+/* Modal Action Buttons Alignment */
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.btn-cancel {
+    flex: 1;
+    padding: 12px;
+    background-color: transparent;
+    border: 1px solid #4b5563;
+    color: #d1d5db;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.05);
+}

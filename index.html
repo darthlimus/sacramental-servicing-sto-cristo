@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Santuario Del Sto. Cristo Parish - Online Sacramental Service</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <header>
@@ -13,7 +15,7 @@
             <img src="MiniLogo-1.webp" width="150" height="auto" alt="Santuario Del Sto. Cristo Parish Logo">
         </div>
         <nav class="nav-links">
-            <a href="#" onclick="openLogin(event)">My Account</a>
+            <a href="#" onclick="openModal('loginOverlay', event)">My Account</a>
         </nav>
     </header>
 
@@ -28,13 +30,14 @@
     </section>
 
     <main class="services-container" id="services">
-        
+
         <article class="service-card">
             <img src="baptism.webp" alt="Baptism Ceremony" class="card-img">
             <div class="card-content">
                 <h3>Baptism</h3>
-                <p>Baptism is the basis of our whole Christian life and the door which gives access to the other sacraments. Through Baptism, we are freed from our sin and reborn as sons of God; we become members of Christ, are incorporated into the Church and made sharers in its mission.</p>
-                <a href="#" onclick="openLogin(event)" class="card-action">Call to action &rarr;</a>
+                <p>Baptism is the basis of our whole Christian life and the door which gives access to the other
+                    sacraments. Through Baptism, we are freed from our sin and reborn as sons of God.</p>
+                <a href="#" onclick="openModal('baptismModal', event)" class="card-action">Apply for Baptism →</a>
             </div>
         </article>
 
@@ -42,8 +45,9 @@
             <img src="wedding.webp" alt="Wedding Ceremony" class="card-img">
             <div class="card-content">
                 <h3>Wedding</h3>
-                <p>Matrimony is a union between a man and a woman through a sacred covenant with God and each other. In this sacrament, the husband and wife promise to love and support each other for richer or poorer, in sickness and health, until death do they part.</p>
-                <a href="#" onclick="openLogin(event)" class="card-action">Call to action &rarr;</a>
+                <p>Matrimony is a union between a man and a woman through a sacred covenant with God and each other. In
+                    this sacrament, the husband and wife promise to love and support each other.</p>
+                <a href="#" onclick="openModal('weddingModal', event)" class="card-action">Apply for Wedding →</a>
             </div>
         </article>
 
@@ -51,8 +55,9 @@
             <img src="funeral.webp" alt="Funeral Vigil" class="card-img">
             <div class="card-content">
                 <h3>Funeral</h3>
-                <p>As Filipino Catholic people, we generally hold a wake known as lamay for our deceased loved one which typically lasts for 3-7 nights. This vigil is being participated by families, relatives, and acquaintances of the dead to pray for their eternal peace and contemplate how their lives have been touched by this person.</p>
-                <a href="#" onclick="openLogin(event)" class="card-action">Call to action &rarr;</a>
+                <p>As Filipino Catholic people, we hold vigil and funeral masses for our deceased loved ones to pray for
+                    their eternal peace and celebrate their life in God's grace.</p>
+                <a href="#" onclick="openModal('funeralModal', event)" class="card-action">Apply for Funeral →</a>
             </div>
         </article>
 
@@ -79,8 +84,9 @@
                 <h3>Quick Navigation</h3>
                 <ul class="footer-links">
                     <li><a href="#services">Sacramental Services</a></li>
-                    <li><a href="#" onclick="openLogin(event)">My Portal Account</a></li>
-                    <li><a href="https://maps.google.com/?q=Santuario+Del+Santo+Cristo+Parish+San+Juan" target="_blank" rel="noopener">Find us on Google Maps ↗</a></li>
+                    <li><a href="#" onclick="openModal('loginOverlay', event)">My Portal Account</a></li>
+                    <li><a href="https://maps.google.com/?q=Santuario+Del+Santo+Cristo+Parish+San+Juan" target="_blank"
+                            rel="noopener">Find us on Google Maps ↗</a></li>
                 </ul>
             </div>
         </div>
@@ -89,43 +95,397 @@
         </div>
     </footer>
 
-    <div class="login-overlay" id="loginOverlay">
-        <div class="login-box">
-            <span class="close-btn" onclick="closeLogin()">&times;</span>
-            <h2>Login</h2>
-            <form onsubmit="event.preventDefault();"> <div class="input-group">
-                    <input type="email" id="email" required placeholder=" ">
-                    <label for="email">Email</label>
-                    <span class="input-icon">&#9993;</span> </div>
+    <!-- ==================== SACRAMENTAL APPLICATION FORMS WITH FILE UPLOADS ==================== -->
 
-                <div class="input-group">
-                    <input type="password" id="password" required placeholder=" ">
-                    <label for="password">Password</label>
-                    <span class="input-icon">&#128274;</span> </div>
-
-                <div class="form-options">
-                    <label class="remember-me"><input type="checkbox"> Remember me</label>
-                    <a href="#" onclick="event.preventDefault();">Forgot Password?</a>
+    <!-- 1. BAPTISM APPLICATION FORM -->
+    <div class="modal-overlay" id="baptismModal">
+        <div class="modal-box">
+            <span class="close-btn" onclick="closeModal('baptismModal')">&times;</span>
+            <h2>Baptism Application</h2>
+            <form onsubmit="event.preventDefault();">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Child's Full Name</label>
+                        <input type="text" placeholder="First, Middle, Last Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date">
+                    </div>
                 </div>
 
-                <button type="button" class="login-submit-btn" onclick="closeLogin()">Login</button>
-                <p class="register-prompt">Don't have an account? <a href="#" onclick="event.preventDefault();">Register</a></p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Father's Full Name</label>
+                        <input type="text" placeholder="Father's Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Mother's Maiden Name</label>
+                        <input type="text" placeholder="Mother's Full Maiden Name">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Contact Phone Number</label>
+                        <input type="tel" placeholder="09XX-XXX-XXXX">
+                    </div>
+                    <div class="form-group">
+                        <label>Preferred Date of Baptism</label>
+                        <input type="date">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Godparents (Ninong & Ninay)</label>
+                    <textarea rows="2" placeholder="List names of principal godparents..."></textarea>
+                </div>
+
+                <!-- Baptism Document Upload Section -->
+                <div class="form-document-section">
+                    <p class="form-section-title">Required Documents</p>
+                    <p class="doc-hint">Please upload clear copies of the <strong>PSA Birth Certificate</strong> and
+                        <strong>Parents' Marriage Contract</strong> (PDF, JPG, PNG).</p>
+
+                    <div class="inline-drop-zone" onclick="document.getElementById('bapFiles').click()">
+                        <span>📄 Click or drag files here to attach Baptism Documents</span>
+                        <input type="file" id="bapFiles" multiple accept=".pdf,.jpg,.jpeg,.png" style="display:none;"
+                            onchange="handleInlineFiles(event, 'bapFileList')">
+                    </div>
+                    <div class="file-preview-list" id="bapFileList"></div>
+                </div>
+
+                <button type="button" class="form-submit-btn" onclick="submitBaptismForm()">Submit Baptism
+                    Application</button>
             </form>
         </div>
     </div>
 
+    <!-- 2. WEDDING APPLICATION FORM -->
+    <div class="modal-overlay" id="weddingModal">
+        <div class="modal-box">
+            <span class="close-btn" onclick="closeModal('weddingModal')">&times;</span>
+            <h2>Wedding Application</h2>
+            <form onsubmit="event.preventDefault();">
+
+                <p class="form-section-title">Groom's Information</p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Groom's Full Name</label>
+                        <input type="text" placeholder="Groom's Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Age & Civil Status</label>
+                        <input type="text" placeholder="e.g. 28, Single">
+                    </div>
+                </div>
+
+                <p class="form-section-title">Bride's Information</p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Bride's Full Name</label>
+                        <input type="text" placeholder="Bride's Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Age & Civil Status</label>
+                        <input type="text" placeholder="e.g. 26, Single">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Contact Email</label>
+                        <input type="email" placeholder="email@domain.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Target Wedding Date</label>
+                        <input type="date">
+                    </div>
+                </div>
+
+                <!-- Wedding Document Upload Section -->
+                <div class="form-document-section">
+                    <p class="form-section-title">Required Documents</p>
+                    <p class="doc-hint">Please upload both parties' <strong>PSA Birth Certificates</strong>,
+                        <strong>CENOMAR</strong>, and <strong>Confirmation Certificates</strong>.</p>
+
+                    <div class="inline-drop-zone" onclick="document.getElementById('wedFiles').click()">
+                        <span>💍 Click or drag files here to attach Wedding Documents</span>
+                        <input type="file" id="wedFiles" multiple accept=".pdf,.jpg,.jpeg,.png" style="display:none;"
+                            onchange="handleInlineFiles(event, 'wedFileList')">
+                    </div>
+                    <div class="file-preview-list" id="wedFileList"></div>
+                </div>
+
+                <button type="button" class="form-submit-btn" onclick="submitWeddingForm()">Submit Wedding
+                    Application</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. FUNERAL APPLICATION FORM -->
+    <div class="modal-overlay" id="funeralModal">
+        <div class="modal-box">
+            <span class="close-btn" onclick="closeModal('funeralModal')">&times;</span>
+            <h2>Funeral Mass / Vigil Request</h2>
+            <form onsubmit="event.preventDefault();">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Deceased Person's Full Name</label>
+                        <input type="text" placeholder="Full Name of Deceased">
+                    </div>
+                    <div class="form-group">
+                        <label>Age at Death</label>
+                        <input type="number" placeholder="Age">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date of Passing</label>
+                        <input type="date">
+                    </div>
+                    <div class="form-group">
+                        <label>Requested Funeral Date</label>
+                        <input type="date">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Contact Person Name</label>
+                        <input type="text" placeholder="Relative / Representative">
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Phone Number</label>
+                        <input type="tel" placeholder="09XX-XXX-XXXX">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Wake Location / Address</label>
+                    <input type="text" placeholder="Chapel name or home address for blessing">
+                </div>
+
+                <!-- Funeral Document Upload Section -->
+                <div class="form-document-section">
+                    <p class="form-section-title">Required Documents</p>
+                    <p class="doc-hint">Please upload the official <strong>Death Certificate</strong> or <strong>Burial
+                            Permit</strong>.</p>
+
+                    <div class="inline-drop-zone" onclick="document.getElementById('funFiles').click()">
+                        <span>✝️ Click or drag files here to attach Funeral Documents</span>
+                        <input type="file" id="funFiles" multiple accept=".pdf,.jpg,.jpeg,.png" style="display:none;"
+                            onchange="handleInlineFiles(event, 'funFileList')">
+                    </div>
+                    <div class="file-preview-list" id="funFileList"></div>
+                </div>
+
+                <button type="button" class="form-submit-btn" onclick="submitFuneralForm()">Submit Funeral
+                    Request</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="loginOverlay">
+        <div class="login-box">
+            <span class="close-btn" onclick="closeModal('loginOverlay')">×</span>
+            <h2>Login</h2>
+            <form onsubmit="event.preventDefault();">
+                <div class="input-group">
+                    <input type="email" required placeholder=" ">
+                    <label>Email</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" required placeholder=" ">
+                    <label>Password</label>
+                </div>
+                <button type="button" class="login-submit-btn" onclick="closeModal('loginOverlay')">Login</button>
+            </form>
+        </div>
+    </div>
+    <!-- FILE / DOCUMENT UPLOAD MODAL -->
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal-box upload-modal-box">
+            <span class="close-btn" onclick="closeModal('uploadModal')">&times;</span>
+            <h2>Upload Required Documents</h2>
+
+            <p class="modal-subtitle">Please attach clear scanned copies or photos of the required official documents
+                for verification.</p>
+
+            <!-- Document Requirements Checklist -->
+            <div class="requirements-box">
+                <h4>📄 Accepted Document Types:</h4>
+                <ul>
+                    <li><strong>Baptism:</strong> PSA Birth Certificate, Parents' Marriage Contract</li>
+                    <li><strong>Wedding:</strong> PSA Birth Certificate, CENOMAR, Confirmation Certificate</li>
+                    <li><strong>Funeral:</strong> Official Death Certificate / Burial Permit</li>
+                </ul>
+            </div>
+
+            <form onsubmit="event.preventDefault();">
+                <!-- Interactive Drag and Drop File Area -->
+                <div class="drop-zone" id="dropZone" onclick="triggerFileInput()">
+                    <div class="drop-zone-icon">📁</div>
+                    <p class="drop-zone-text"><strong>Click to browse</strong> or drag & drop your files here</p>
+                    <span class="drop-zone-hint">Supports: PDF, JPG, PNG (Max 10MB per file)</span>
+                    <!-- Hidden file input triggered by JS -->
+                    <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png" style="display: none;"
+                        onchange="handleFileSelect(event)">
+                </div>
+
+                <!-- List to display selected files dynamically -->
+                <div class="selected-files-list" id="selectedFilesList"></div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('uploadModal')">Cancel</button>
+                    <button type="button" class="form-submit-btn" onclick="closeModal('uploadModal')">Upload & Submit
+                        Documents</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <script>
-        function openLogin(event) {
-            event.preventDefault();
-            document.getElementById('loginOverlay').classList.add('active');
-            document.body.style.overflow = 'hidden'; /* Locks main scroll behind popup */
+        // --- Modal Controls ---
+        function openModal(modalId, event) {
+            if (event) event.preventDefault();
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
-        function closeLogin() {
-            document.getElementById('loginOverlay').classList.remove('active');
-            document.body.style.overflow = 'auto'; /* Restores scroll */
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // --- Inline File Preview Handler ---
+        function handleInlineFiles(event, targetListId) {
+            const files = event.target.files;
+            const listContainer = document.getElementById(targetListId);
+            listContainer.innerHTML = '';
+
+            if (files.length > 0) {
+                Array.from(files).forEach((file, index) => {
+                    const badge = document.createElement('div');
+                    badge.className = 'file-badge';
+                    const fileSize = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+                    badge.innerHTML = `
+                    <span>📄 ${file.name} (${fileSize})</span>
+                    <span class="remove-badge" onclick="removeInlineFile('${event.target.id}', ${index}, '${targetListId}')">&times;</span>
+                `;
+                    listContainer.appendChild(badge);
+                });
+            }
+        }
+
+        function removeInlineFile(inputId, index, targetListId) {
+            const input = document.getElementById(inputId);
+            const dt = new DataTransfer();
+            const { files } = input;
+
+            for (let i = 0; i < files.length; i++) {
+                if (i !== index) dt.items.add(files[i]);
+            }
+
+            input.files = dt.files;
+            handleInlineFiles({ target: input }, targetListId);
+        }
+
+        // --- BACKEND INTEGRATION FUNCTIONS (Sends data to Node.js) ---
+
+        // 1. Submit Baptism Form
+        async function submitBaptismForm() {
+            const modal = document.getElementById('baptismModal');
+            const inputs = modal.querySelectorAll('input');
+            const textarea = modal.querySelector('textarea');
+            const fileInput = document.getElementById('bapFiles');
+
+            const formData = new FormData();
+            formData.append('childName', inputs[0].value);
+            formData.append('dob', inputs[1].value);
+            formData.append('fatherName', inputs[2].value);
+            formData.append('motherName', inputs[3].value);
+            formData.append('phone', inputs[4].value);
+            formData.append('preferredDate', inputs[5].value);
+            formData.append('godparents', textarea.value);
+
+            // Attach documents
+            if (fileInput.files.length > 0) {
+                Array.from(fileInput.files).forEach(file => {
+                    formData.append('documents', file);
+                });
+            }
+
+            await sendDataToNode('http://localhost:5000/api/apply/baptism', formData, 'baptismModal');
+        }
+
+        // 2. Submit Wedding Form
+        async function submitWeddingForm() {
+            const modal = document.getElementById('weddingModal');
+            const inputs = modal.querySelectorAll('input');
+            const fileInput = document.getElementById('wedFiles');
+
+            const formData = new FormData();
+            formData.append('groomName', inputs[0].value);
+            formData.append('groomAgeStatus', inputs[1].value);
+            formData.append('brideName', inputs[2].value);
+            formData.append('brideAgeStatus', inputs[3].value);
+            formData.append('email', inputs[4].value);
+            formData.append('targetDate', inputs[5].value);
+
+            // Attach documents
+            if (fileInput.files.length > 0) {
+                Array.from(fileInput.files).forEach(file => {
+                    formData.append('documents', file);
+                });
+            }
+
+            await sendDataToNode('http://localhost:5000/api/apply/wedding', formData, 'weddingModal');
+        }
+
+        // 3. Submit Funeral Form
+        async function submitFuneralForm() {
+            const modal = document.getElementById('funeralModal');
+            const inputs = modal.querySelectorAll('input');
+            const fileInput = document.getElementById('funFiles');
+
+            const formData = new FormData();
+            formData.append('deceasedName', inputs[0].value);
+            formData.append('age', inputs[1].value);
+            formData.append('dateOfPassing', inputs[2].value);
+            formData.append('requestedDate', inputs[3].value);
+            formData.append('contactPerson', inputs[4].value);
+            formData.append('phone', inputs[5].value);
+            formData.append('wakeLocation', inputs[6].value);
+
+            // Attach documents
+            if (fileInput.files.length > 0) {
+                Array.from(fileInput.files).forEach(file => {
+                    formData.append('documents', file);
+                });
+            }
+
+            await sendDataToNode('http://localhost:5000/api/apply/funeral', formData, 'funeralModal');
+        }
+
+        // Helper function to send requests to Node.js server
+        async function sendDataToNode(endpoint, formData, modalId) {
+            if (result.success) {
+                alert(`SUCCESS!\n\n${result.message}\nReference ID: ${result.referenceId}`);
+
+                // Resets the inputs inside the active modal
+                const activeModal = document.getElementById(modalId);
+                activeModal.querySelectorAll('input, textarea').forEach(input => input.value = '');
+
+                // Clears file badge lists
+                const badgeList = activeModal.querySelector('.file-preview-list');
+                if (badgeList) badgeList.innerHTML = '';
+
+                closeModal(modalId);
+            }
         }
     </script>
 
 </body>
+
 </html>
