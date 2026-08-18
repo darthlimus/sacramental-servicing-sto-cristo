@@ -1,0 +1,22 @@
+[
+  {
+    "id": "BAP-1785308022622",
+    "serviceType": "Baptism",
+    "applicantData": {
+      "childName": "Kupal",
+      "dob": "",
+      "fatherName": "sdfsadfasdf",
+      "motherName": "",
+      "phone": "43252345",
+      "preferredDate": "",
+      "godparents": "asdfasdfasdfa"
+    },
+    "attachedFiles": [
+      "1785308022529-109938399.jpg"
+    ],
+    "status": "Rejected",
+    "submittedAt": "2026-07-29T06:53:42.622Z",
+    "isArchived": true,
+    "archivedAt": "2026-07-29T07:53:20.207Z"
+  }
+]

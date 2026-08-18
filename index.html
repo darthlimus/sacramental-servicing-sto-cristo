@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Santuario Del Sto. Cristo Parish - Online Sacramental Service</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
 </head>
 
 <body>
@@ -15,7 +16,8 @@
             <img src="MiniLogo-1.webp" width="150" height="auto" alt="Santuario Del Sto. Cristo Parish Logo">
         </div>
         <nav class="nav-links">
-            <a href="#" onclick="openModal('loginOverlay', event)">My Account</a>
+            <!-- FIXED: Changed 'loginOverlay' to 'authModal' -->
+            <a href="#" onclick="openModal('authModal', event)">My Account</a>
         </nav>
     </header>
 
@@ -84,7 +86,8 @@
                 <h3>Quick Navigation</h3>
                 <ul class="footer-links">
                     <li><a href="#services">Sacramental Services</a></li>
-                    <li><a href="#" onclick="openModal('loginOverlay', event)">My Portal Account</a></li>
+                    <!-- FIXED: Changed 'loginOverlay' to 'authModal' -->
+                    <li><a href="#" onclick="openModal('authModal', event)">My Portal Account</a></li>
                     <li><a href="https://maps.google.com/?q=Santuario+Del+Santo+Cristo+Parish+San+Juan" target="_blank"
                             rel="noopener">Find us on Google Maps ↗</a></li>
                 </ul>
@@ -145,7 +148,8 @@
                 <div class="form-document-section">
                     <p class="form-section-title">Required Documents</p>
                     <p class="doc-hint">Please upload clear copies of the <strong>PSA Birth Certificate</strong> and
-                        <strong>Parents' Marriage Contract</strong> (PDF, JPG, PNG).</p>
+                        <strong>Parents' Marriage Contract</strong> (PDF, JPG, PNG).
+                    </p>
 
                     <div class="inline-drop-zone" onclick="document.getElementById('bapFiles').click()">
                         <span>📄 Click or drag files here to attach Baptism Documents</span>
@@ -207,7 +211,8 @@
                 <div class="form-document-section">
                     <p class="form-section-title">Required Documents</p>
                     <p class="doc-hint">Please upload both parties' <strong>PSA Birth Certificates</strong>,
-                        <strong>CENOMAR</strong>, and <strong>Confirmation Certificates</strong>.</p>
+                        <strong>CENOMAR</strong>, and <strong>Confirmation Certificates</strong>.
+                    </p>
 
                     <div class="inline-drop-zone" onclick="document.getElementById('wedFiles').click()">
                         <span>💍 Click or drag files here to attach Wedding Documents</span>
@@ -287,23 +292,65 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="loginOverlay">
-        <div class="login-box">
-            <span class="close-btn" onclick="closeModal('loginOverlay')">×</span>
-            <h2>Login</h2>
-            <form onsubmit="event.preventDefault();">
-                <div class="input-group">
-                    <input type="email" required placeholder=" ">
-                    <label>Email</label>
+    <!-- 4. ACCOUNT AUTHENTICATION MODAL (LOGIN & REGISTER) -->
+    <!-- FIXED: Restructured so tab buttons and modal box are properly contained -->
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-box auth-card">
+            <span class="close-btn" onclick="closeModal('authModal')">&times;</span>
+
+            <!-- Form Tabs -->
+            <div class="auth-tabs">
+                <button id="loginTabBtn" class="tab-btn active" onclick="switchAuthTab('login')">Sign In</button>
+                <button id="registerTabBtn" class="tab-btn" onclick="switchAuthTab('register')">Create Account</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
+                <h2>Welcome Back</h2>
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="e.g. juan@example.com" required>
                 </div>
-                <div class="input-group">
-                    <input type="password" required placeholder=" ">
-                    <label>Password</label>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
                 </div>
-                <button type="button" class="login-submit-btn" onclick="closeModal('loginOverlay')">Login</button>
+                <button type="submit" class="submit-btn">Login</button>
+            </form>
+
+            <!-- REGISTER FORM -->
+            <form id="registerForm" class="auth-form hidden" onsubmit="handleRegister(event)">
+                <h2>Create an Account</h2>
+                <div class="form-group">
+                    <label for="regFullName">Full Name</label>
+                    <input type="text" id="regFullName" placeholder="e.g. Juan dela Cruz" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email Address</label>
+                    <input type="email" id="regEmail" placeholder="e.g. juan@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" placeholder="Minimum 6 characters" minlength="6" required>
+                </div>
+                <button type="submit" class="submit-btn">Register</button>
             </form>
         </div>
     </div>
+
+    <div id="dashboardModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2><i class="fas fa-tasks"></i> My Submitted Applications</h2>
+                <span class="close-btn" onclick="closeModal('dashboardModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="dashboardContainer">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- FILE / DOCUMENT UPLOAD MODAL -->
     <div class="modal-overlay" id="uploadModal">
         <div class="modal-box upload-modal-box">
@@ -313,7 +360,6 @@
             <p class="modal-subtitle">Please attach clear scanned copies or photos of the required official documents
                 for verification.</p>
 
-            <!-- Document Requirements Checklist -->
             <div class="requirements-box">
                 <h4>📄 Accepted Document Types:</h4>
                 <ul>
@@ -324,17 +370,14 @@
             </div>
 
             <form onsubmit="event.preventDefault();">
-                <!-- Interactive Drag and Drop File Area -->
                 <div class="drop-zone" id="dropZone" onclick="triggerFileInput()">
                     <div class="drop-zone-icon">📁</div>
                     <p class="drop-zone-text"><strong>Click to browse</strong> or drag & drop your files here</p>
                     <span class="drop-zone-hint">Supports: PDF, JPG, PNG (Max 10MB per file)</span>
-                    <!-- Hidden file input triggered by JS -->
                     <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png" style="display: none;"
                         onchange="handleFileSelect(event)">
                 </div>
 
-                <!-- List to display selected files dynamically -->
                 <div class="selected-files-list" id="selectedFilesList"></div>
 
                 <div class="modal-actions">
@@ -345,23 +388,199 @@
             </form>
         </div>
     </div>
+
     <script>
-        // --- Modal Controls ---
+        // ==========================================
+        // 1. INITIALIZE DEXIE INDEXEDDB
+        // ==========================================
+        const db = new Dexie('ParishPortalDB');
+
+        // Define tables and indexed fields
+        db.version(1).stores({
+            users: '++id, email, fullName, role, createdAt',
+            applications: '++id, userId, sacramentType, status, createdAt'
+        });
+
+        console.log("Local IndexedDB database initialized successfully!");
+
+        // ==========================================
+        // 2. MODAL & NAVIGATION CONTROLS
+        // ==========================================
         function openModal(modalId, event) {
             if (event) event.preventDefault();
-            document.getElementById(modalId).classList.add('active');
-            document.body.style.overflow = 'hidden';
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.classList.add('active'); // Added to trigger CSS opacity & interactivity
+            }
         }
 
         function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-            document.body.style.overflow = 'auto';
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('active'); // Added to hide modal properly
+            }
         }
 
-        // --- Inline File Preview Handler ---
+        function switchAuthTab(tabName) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+
+            if (tabName === 'login') {
+                if (loginForm) loginForm.style.display = 'block';
+                if (registerForm) registerForm.style.display = 'none';
+            } else if (tabName === 'register') {
+                if (loginForm) loginForm.style.display = 'none';
+                if (registerForm) registerForm.style.display = 'block';
+            }
+        }
+
+        // ==========================================
+        // 3. AUTHENTICATION (LOGIN & REGISTER)
+        // ==========================================
+        async function handleLogin(event) {
+            if (event) event.preventDefault();
+
+            const emailInput = document.getElementById('loginEmail');
+            const passwordInput = document.getElementById('loginPassword');
+
+            if (!emailInput || !passwordInput) {
+                alert('Login input fields (loginEmail / loginPassword) not found in HTML.');
+                return;
+            }
+
+            const email = emailInput.value.trim().toLowerCase();
+            const password = passwordInput.value.trim();
+
+            if (!email || !password) {
+                alert('Please enter both email and password.');
+                return;
+            }
+
+            try {
+                // Query Dexie IndexedDB for matching user
+                const user = await db.users
+                    .where('email')
+                    .equalsIgnoreCase(email)
+                    .first();
+
+                if (user && user.password === password) {
+                    // Save current session
+                    const sessionUser = {
+                        id: user.id,
+                        fullName: user.fullName,
+                        email: user.email,
+                        role: user.role
+                    };
+                    localStorage.setItem('currentUser', JSON.stringify(sessionUser));
+
+                    // Close modal & update header UI
+                    closeModal('authModal');
+                    updateHeaderUI();
+
+                    // Clear input fields
+                    emailInput.value = '';
+                    passwordInput.value = '';
+
+                    alert(`Welcome back, ${user.fullName}!`);
+                } else {
+                    alert('Invalid email or password. Please try again.');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('An error occurred during login. Check console for details.');
+            }
+        }
+
+        async function handleRegister(event) {
+            if (event) event.preventDefault();
+
+            const fullNameInput = document.getElementById('regFullName');
+            const emailInput = document.getElementById('regEmail');
+            const passwordInput = document.getElementById('regPassword');
+
+            if (!fullNameInput || !emailInput || !passwordInput) {
+                alert('Registration inputs not found in HTML.');
+                return;
+            }
+
+            const fullName = fullNameInput.value.trim();
+            const email = emailInput.value.trim().toLowerCase();
+            const password = passwordInput.value.trim();
+
+            try {
+                // Check if user already exists
+                const existingUser = await db.users.where('email').equalsIgnoreCase(email).first();
+                if (existingUser) {
+                    alert('An account with this email already exists!');
+                    return;
+                }
+
+                // Save user to IndexedDB
+                await db.users.add({
+                    fullName,
+                    email,
+                    password,
+                    role: 'parishioner',
+                    createdAt: new Date().toISOString()
+                });
+
+                alert('Account created successfully! Switching you to login...');
+
+                // Reset form, pre-fill email, switch tab
+                document.getElementById('registerForm').reset();
+                document.getElementById('loginEmail').value = email;
+                switchAuthTab('login');
+
+            } catch (error) {
+                console.error('Registration failed:', error);
+                alert('Could not save user account locally.');
+            }
+        }
+
+        // ==========================================
+        // 4. HEADER & SESSION UI
+        // ==========================================
+        function updateHeaderUI() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const navContainer = document.querySelector('.nav-links');
+
+            if (!navContainer) return;
+
+            if (currentUser) {
+                navContainer.innerHTML = `
+                <a href="#services">Services</a>
+                <a href="#mass-schedule">Mass Schedule</a>
+                <a href="#" onclick="openDashboard(event)">📋 My Dashboard</a>
+                <span style="color: #d4af37; font-weight: bold; margin-left: 10px;">👤 ${currentUser.fullName}</span>
+                <a href="#" onclick="logoutUser(event)" style="color: #ff6b6b; margin-left: 10px;">Logout</a>
+            `;
+            } else {
+                navContainer.innerHTML = `
+                <a href="#services">Services</a>
+                <a href="#mass-schedule">Mass Schedule</a>
+                <a href="#contact">Contact</a>
+                <a href="#" onclick="openModal('authModal', event)">My Account</a>
+            `;
+            }
+        }
+
+        function logoutUser(event) {
+            if (event) event.preventDefault();
+            localStorage.removeItem('currentUser');
+            updateHeaderUI();
+            alert('You have been logged out.');
+        }
+
+        // ==========================================
+        // 5. INLINE FILE PREVIEW HANDLERS
+        // ==========================================
         function handleInlineFiles(event, targetListId) {
             const files = event.target.files;
             const listContainer = document.getElementById(targetListId);
+            if (!listContainer) return;
+
             listContainer.innerHTML = '';
 
             if (files.length > 0) {
@@ -391,14 +610,22 @@
             handleInlineFiles({ target: input }, targetListId);
         }
 
-        // --- BACKEND INTEGRATION FUNCTIONS (Sends data to Node.js) ---
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve({ name: file.name, type: file.type, size: file.size, data: reader.result });
+                reader.onerror = error => reject(error);
+            });
+        }
 
-        // 1. Submit Baptism Form
+        // ==========================================
+        // 6. SACRAMENT FORM SUBMISSIONS
+        // ==========================================
         async function submitBaptismForm() {
             const modal = document.getElementById('baptismModal');
             const inputs = modal.querySelectorAll('input');
             const textarea = modal.querySelector('textarea');
-            const fileInput = document.getElementById('bapFiles');
 
             const formData = new FormData();
             formData.append('childName', inputs[0].value);
@@ -407,23 +634,14 @@
             formData.append('motherName', inputs[3].value);
             formData.append('phone', inputs[4].value);
             formData.append('preferredDate', inputs[5].value);
-            formData.append('godparents', textarea.value);
-
-            // Attach documents
-            if (fileInput.files.length > 0) {
-                Array.from(fileInput.files).forEach(file => {
-                    formData.append('documents', file);
-                });
-            }
+            formData.append('godparents', textarea ? textarea.value : '');
 
             await sendDataToNode('http://localhost:5000/api/apply/baptism', formData, 'baptismModal');
         }
 
-        // 2. Submit Wedding Form
         async function submitWeddingForm() {
             const modal = document.getElementById('weddingModal');
             const inputs = modal.querySelectorAll('input');
-            const fileInput = document.getElementById('wedFiles');
 
             const formData = new FormData();
             formData.append('groomName', inputs[0].value);
@@ -433,21 +651,12 @@
             formData.append('email', inputs[4].value);
             formData.append('targetDate', inputs[5].value);
 
-            // Attach documents
-            if (fileInput.files.length > 0) {
-                Array.from(fileInput.files).forEach(file => {
-                    formData.append('documents', file);
-                });
-            }
-
             await sendDataToNode('http://localhost:5000/api/apply/wedding', formData, 'weddingModal');
         }
 
-        // 3. Submit Funeral Form
         async function submitFuneralForm() {
             const modal = document.getElementById('funeralModal');
             const inputs = modal.querySelectorAll('input');
-            const fileInput = document.getElementById('funFiles');
 
             const formData = new FormData();
             formData.append('deceasedName', inputs[0].value);
@@ -458,32 +667,150 @@
             formData.append('phone', inputs[5].value);
             formData.append('wakeLocation', inputs[6].value);
 
-            // Attach documents
-            if (fileInput.files.length > 0) {
-                Array.from(fileInput.files).forEach(file => {
-                    formData.append('documents', file);
-                });
-            }
-
             await sendDataToNode('http://localhost:5000/api/apply/funeral', formData, 'funeralModal');
         }
 
-        // Helper function to send requests to Node.js server
         async function sendDataToNode(endpoint, formData, modalId) {
-            if (result.success) {
-                alert(`SUCCESS!\n\n${result.message}\nReference ID: ${result.referenceId}`);
+            try {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { id: null, fullName: 'Guest' };
 
-                // Resets the inputs inside the active modal
+                const formFields = {};
+                for (let [key, value] of formData.entries()) {
+                    if (key !== 'documents') formFields[key] = value;
+                }
+
+                const attachedFiles = [];
+                const fileInput = document.getElementById(modalId).querySelector('input[type="file"]');
+                if (fileInput && fileInput.files.length > 0) {
+                    for (let file of fileInput.files) {
+                        const base64File = await fileToBase64(file);
+                        attachedFiles.push(base64File);
+                    }
+                }
+
+                const refNumber = 'SDSC-' + Math.floor(100000 + Math.random() * 900000);
+
+                await db.applications.add({
+                    referenceId: refNumber,
+                    userId: currentUser.id,
+                    applicantName: currentUser.fullName,
+                    sacramentType: modalId.replace('Modal', ''),
+                    details: formFields,
+                    documents: attachedFiles,
+                    status: 'Pending Review',
+                    createdAt: new Date().toISOString()
+                });
+
+                alert(`APPLICATION SAVED LOCALLY!\n\nReference ID: ${refNumber}\nStatus: Pending Review`);
+
                 const activeModal = document.getElementById(modalId);
-                activeModal.querySelectorAll('input, textarea').forEach(input => input.value = '');
-
-                // Clears file badge lists
-                const badgeList = activeModal.querySelector('.file-preview-list');
-                if (badgeList) badgeList.innerHTML = '';
-
+                if (activeModal) {
+                    activeModal.querySelectorAll('input, textarea').forEach(i => i.value = '');
+                    const badgeList = activeModal.querySelector('.file-preview-list');
+                    if (badgeList) badgeList.innerHTML = '';
+                }
                 closeModal(modalId);
+
+            } catch (error) {
+                console.error('Error saving to IndexedDB:', error);
+                alert('Failed to save application locally.');
             }
         }
+
+        // ==========================================
+        // 7. USER DASHBOARD
+        // ==========================================
+        async function renderUserDashboard() {
+            const container = document.getElementById('dashboardContainer');
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+            if (!container) return;
+
+            if (!currentUser) {
+                container.innerHTML = `
+                <div class="dashboard-empty">
+                    <p>Please log in to view your applications.</p>
+                </div>`;
+                return;
+            }
+
+            try {
+                const userApps = await db.applications
+                    .where('userId')
+                    .equals(currentUser.id)
+                    .reverse()
+                    .toArray();
+
+                if (userApps.length === 0) {
+                    container.innerHTML = `
+                    <div class="dashboard-empty">
+                        <i class="fas fa-folder-open" style="font-size: 3rem; color: #ccc; margin-bottom: 10px;"></i>
+                        <p>You haven't submitted any applications yet.</p>
+                    </div>`;
+                    return;
+                }
+
+                let tableHTML = `
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Reference ID</th>
+                            <th>Service / Sacrament</th>
+                            <th>Submitted Date</th>
+                            <th>Status</th>
+                            <th>Documents</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+                userApps.forEach(app => {
+                    let badgeClass = 'badge-pending';
+                    if (app.status === 'Approved') badgeClass = 'badge-approved';
+                    if (app.status === 'Requirements Incomplete') badgeClass = 'badge-incomplete';
+                    if (app.status === 'Completed') badgeClass = 'badge-completed';
+
+                    const formattedDate = new Date(app.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+
+                    const docCount = app.documents ? app.documents.length : 0;
+                    const sacramentTitle = app.sacramentType.charAt(0).toUpperCase() + app.sacramentType.slice(1);
+
+                    tableHTML += `
+                    <tr>
+                        <td><strong>${app.referenceId}</strong></td>
+                        <td>${sacramentTitle}</td>
+                        <td>${formattedDate}</td>
+                        <td><span class="badge ${badgeClass}">${app.status}</span></td>
+                        <td>📎 ${docCount} file(s) attached</td>
+                    </tr>
+                `;
+                });
+
+                tableHTML += `
+                    </tbody>
+                </table>
+            `;
+
+                container.innerHTML = tableHTML;
+
+            } catch (error) {
+                console.error('Error fetching dashboard records:', error);
+                container.innerHTML = `<p style="color:red;">Error loading your applications.</p>`;
+            }
+        }
+
+        function openDashboard(event) {
+            if (event) event.preventDefault();
+            renderUserDashboard();
+            openModal('dashboardModal');
+        }
+
+        // Auto update header on page load
+        document.addEventListener('DOMContentLoaded', updateHeaderUI);
     </script>
 
 </body>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santuario Del Sto. Cristo - Admin Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+</head>
+
+<body class="admin-body">
+
+    <header class="admin-nav">
+        <h1>⛪ Parish Secretariat Admin Dashboard</h1>
+    </header>
+
+    <div class="admin-container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Submissions</h3>
+                <p id="totalCount">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Baptisms</h3>
+                <p id="bapCount">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Weddings</h3>
+                <p id="wedCount">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Funerals</h3>
+                <p id="funCount">0</p>
+            </div>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="table-controls" style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <select id="serviceFilter" onchange="renderTable()">
+                <option value="ALL">All Services</option>
+                <option value="baptism">Baptism</option>
+                <option value="wedding">Wedding</option>
+                <option value="funeral">Funeral</option>
+            </select>
+
+            <select id="statusFilter" onchange="renderTable()">
+                <option value="ALL">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+
+            <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="Search by Ref ID or Email...">
+        </div>
+
+        <!-- Archive View Switcher -->
+        <div class="view-group" style="margin-bottom: 15px;">
+            <button id="viewActiveBtn" class="toggle-btn active" onclick="switchView(false)">
+                📥 Active Inbox
+            </button>
+            <button id="viewArchiveBtn" class="toggle-btn" onclick="switchView(true)">
+                📁 Sacramental Archives
+            </button>
+            <button class="refresh-btn" onclick="fetchApplications()">🔄 Refresh Submissions</button>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Ref ID</th>
+                        <th>Sacrament</th>
+                        <th>Applicant / Contact</th>
+                        <th>Target Date</th>
+                        <th>Attached Files</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="applicationsTableBody">
+                    <tr>
+                        <td colspan="7" class="no-data">Loading application records...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // 1. Initialize Dexie DB matching index.html setup
+        const db = new Dexie('ParishPortalDB');
+        db.version(1).stores({
+            users: '++id, email, fullname, password, createdAt',
+            applications: '++id, referenceId, sacramentType, email, status, archived, createdAt'
+        });
+
+        let rawApplicationsData = [];
+        let showArchivedView = false; // Default: Active Inbox
+
+        // Fetch applications from Dexie
+        async function fetchApplications() {
+            try {
+                rawApplicationsData = await db.applications.toArray();
+                updateStats();
+                renderTable();
+            } catch (error) {
+                console.error('Error fetching applications from Dexie:', error);
+                const tbody = document.getElementById('applicationsTableBody');
+                if (tbody) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:red;">Error loading records.</td></tr>`;
+                }
+            }
+        }
+
+        // Toggle Active / Archive View
+        function switchView(isArchived) {
+            showArchivedView = isArchived;
+            document.getElementById('viewActiveBtn').classList.toggle('active', !isArchived);
+            document.getElementById('viewArchiveBtn').classList.toggle('active', isArchived);
+            renderTable();
+        }
+
+        // Update Top Stat Cards
+        function updateStats() {
+            const activeApps = rawApplicationsData.filter(a => !a.archived);
+
+            document.getElementById('totalCount').textContent = activeApps.length;
+            document.getElementById('bapCount').textContent = activeApps.filter(a => (a.sacramentType || '').toLowerCase() === 'baptism').length;
+            document.getElementById('wedCount').textContent = activeApps.filter(a => (a.sacramentType || '').toLowerCase() === 'wedding').length;
+            document.getElementById('funCount').textContent = activeApps.filter(a => (a.sacramentType || '').toLowerCase() === 'funeral').length;
+        }
+
+        // Render Table
+        // Render Table with Interactive File Viewer Links
+        function renderTable() {
+            const tbody = document.getElementById('applicationsTableBody');
+            if (!tbody) return;
+
+            const serviceFilter = (document.getElementById('serviceFilter')?.value || 'ALL').toLowerCase();
+            const statusFilter = (document.getElementById('statusFilter')?.value || 'ALL').toLowerCase();
+            const searchInput = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+
+            let filtered = rawApplicationsData.filter(app => {
+                // Filter by Archive Mode
+                const isArchived = Boolean(app.archived);
+                if (isArchived !== showArchivedView) return false;
+
+                const appService = (app.sacramentType || '').toLowerCase();
+                const appStatus = (app.status || '').toLowerCase();
+
+                if (serviceFilter !== 'all' && appService !== serviceFilter) return false;
+                if (statusFilter !== 'all' && appStatus !== statusFilter) return false;
+
+                if (searchInput !== '') {
+                    const ref = (app.referenceId || '').toLowerCase();
+                    const email = (app.email || '').toLowerCase();
+                    const name = (app.fullName || app.childName || '').toLowerCase();
+                    if (!ref.includes(searchInput) && !email.includes(searchInput) && !name.includes(searchInput) && !appService.includes(searchInput)) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px; color: #777;">
+            ${showArchivedView ? 'No archived applications found.' : 'No active applications found.'}
+        </td></tr>`;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(app => {
+                const dateStr = app.createdAt ? new Date(app.createdAt).toLocaleDateString() : 'N/A';
+                const sacramentTitle = app.sacramentType ? (app.sacramentType.charAt(0).toUpperCase() + app.sacramentType.slice(1)) : 'N/A';
+                const currentStatus = app.status || 'Pending';
+
+                let badgeClass = 'status-pending';
+                if (currentStatus.toLowerCase() === 'approved') badgeClass = 'status-approved';
+                if (currentStatus.toLowerCase() === 'rejected') badgeClass = 'status-rejected';
+
+                let targetDate = app.preferredDate || app.targetDate || app.requestedDate || dateStr;
+
+                // Render Clickable Files / Documents List
+                let filesHtml = '<span style="color:#888;">No files</span>';
+                if (app.documents && app.documents.length > 0) {
+                    filesHtml = app.documents.map((doc, idx) => {
+                        let docName = typeof doc === 'string' ? `Doc ${idx + 1}` : (doc.name || `Doc ${idx + 1}`);
+
+                        // Handle Base64 Data URLs, Object URLs, or Blob objects
+                        let docUrl = '#';
+                        if (typeof doc === 'string') {
+                            docUrl = doc; // Base64 string
+                        } else if (doc.data) {
+                            docUrl = doc.data;
+                        } else if (doc instanceof Blob || doc instanceof File) {
+                            docUrl = URL.createObjectURL(doc);
+                        }
+
+                        return `<a href="${docUrl}" target="_blank" download="${docName}" class="file-link" style="display:inline-block; margin: 2px 0; padding: 2px 6px; background: #eef2f7; border-radius: 4px; font-size: 12px; color: #0056b3; text-decoration: none;">📄 ${docName}</a>`;
+                    }).join('<br>');
+                }
+
+                html += `
+        <tr style="${app.archived ? 'opacity: 0.7; background-color: #f9f9f9;' : ''}">
+            <td><strong>${app.referenceId || 'N/A'}</strong></td>
+            <td>${sacramentTitle}</td>
+            <td>${app.email || app.fullName || 'N/A'}</td>
+            <td>${targetDate}</td>
+            <td>${filesHtml}</td>
+            <td>
+                <select onchange="updateApplicationStatus(${app.id}, this.value)" class="status-select ${badgeClass}">
+                    <option value="Pending" ${currentStatus.toLowerCase() === 'pending' ? 'selected' : ''}>Pending</option>
+                    <option value="Approved" ${currentStatus.toLowerCase() === 'approved' ? 'selected' : ''}>Approved</option>
+                    <option value="Rejected" ${currentStatus.toLowerCase() === 'rejected' ? 'selected' : ''}>Rejected</option>
+                </select>
+                ${app.adminNote ? `<br><small style="color:red;">Note: ${app.adminNote}</small>` : ''}
+            </td>
+            <td>
+                <button onclick="toggleArchive(${app.id})" class="btn-action">
+                    ${app.archived ? '↩️ Restore' : '📦 Archive'}
+                </button>
+            </td>
+        </tr>
+    `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        // Update Status
+        async function updateApplicationStatus(id, newStatus) {
+            let adminNote = '';
+            if (newStatus === 'Rejected') {
+                adminNote = prompt('Enter rejection reason for parish record:');
+                if (adminNote === null) return;
+            }
+
+            try {
+                await db.applications.update(id, {
+                    status: newStatus,
+                    adminNote: adminNote || ''
+                });
+
+                const record = rawApplicationsData.find(a => a.id === id);
+                if (record) {
+                    record.status = newStatus;
+                    record.adminNote = adminNote;
+                }
+                updateStats();
+                renderTable();
+            } catch (error) {
+                console.error('Error updating status in Dexie:', error);
+            }
+        }
+
+        // Toggle Archive
+        async function toggleArchive(id) {
+            const record = rawApplicationsData.find(a => a.id === id);
+            if (!record) return;
+
+            const newArchived = !record.archived;
+            try {
+                await db.applications.update(id, { archived: newArchived });
+                record.archived = newArchived;
+                updateStats();
+                renderTable();
+            } catch (error) {
+                console.error('Error toggling archive status:', error);
+            }
+        }
+
+        window.onload = fetchApplications;
+    </script>
+</body>
+
+</html>
